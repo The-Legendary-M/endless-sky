@@ -36,7 +36,8 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 #include "PlayerInfoPanel.h"
 #include "Rectangle.h"
 #include "Ship.h"
-#include "Sprite.h"
+#include "ShipNameDialog.h"
+#include "image/Sprite.h"
 #include "SpriteShader.h"
 #include "text/Table.h"
 #include "text/truncate.hpp"
@@ -162,7 +163,7 @@ bool ShipInfoPanel::KeyDown(SDL_Keycode key, Uint16 mod, const Command &command,
 		GetUI()->Push(new PlayerInfoPanel(player, std::move(panelState)));
 	}
 	else if(key == 'R' || (key == 'r' && shift))
-		GetUI()->Push(new Dialog(this, &ShipInfoPanel::Rename, "Change this ship's name?", (*shipIt)->Name()));
+		GetUI()->Push(new ShipNameDialog(this, &ShipInfoPanel::Rename, "Change this ship's name?", (*shipIt)->Name()));
 	else if(panelState.CanEdit() && (key == 'P' || (key == 'p' && shift) || key == 'k'))
 	{
 		if(shipIt->get() != player.Flagship() || (*shipIt)->IsParked())
@@ -394,7 +395,7 @@ void ShipInfoPanel::DrawOutfits(const Rectangle &bounds, Rectangle &cargoBounds)
 		if(it == outfits.end())
 			continue;
 
-		// Skip to the next column if there is not space for this category label
+		// Skip to the next column if there is no space for this category label
 		// plus at least one outfit.
 		if(table.GetRowBounds().Bottom() + 40. > bounds.Bottom())
 		{
@@ -494,8 +495,8 @@ void ShipInfoPanel::DrawWeapons(const Rectangle &bounds)
 
 	int index = 0;
 	const double centerX = bounds.Center().X();
-	const double labelCenter[2] = {-.5 * LABEL_WIDTH - LABEL_DX, LABEL_DX + .5 * LABEL_WIDTH};
-	const double fromX[2] = {-LABEL_DX + LABEL_PAD, LABEL_DX - LABEL_PAD};
+	const double labelCenter[2] = {centerX - .5 * LABEL_WIDTH - LABEL_DX, centerX + LABEL_DX + .5 * LABEL_WIDTH};
+	const double fromX[2] = { centerX - LABEL_DX + LABEL_PAD, centerX + LABEL_DX - LABEL_PAD};
 	static const double LINE_HEIGHT = 20.;
 	static const double TEXT_OFF = .5 * (LINE_HEIGHT - font.Height());
 	static const Point LINE_SIZE(LABEL_WIDTH, LINE_HEIGHT);
